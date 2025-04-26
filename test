@@ -1,0 +1,7 @@
+# Chương trình chào người dùng
+
+# Nhập tên từ bàn phím
+ten = input("Nhập tên của bạn: ")
+
+# In lời chào
+print("Xin chào,", ten, "! Chúc bạn một ngày tốt lành.")
