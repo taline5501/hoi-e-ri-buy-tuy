@@ -1,0 +1,47 @@
+class Department:
+    # class variable - dùng chung cho tất cả phòng ban
+    number_employee = 0
+
+    def __init__(self, name):
+        self.name = name               # instance variable
+        self.employees = []            # instance variable
+
+    def add_employee(self, emp_name):
+        self.employees.append(emp_name)
+        Department.number_employee += 1
+
+    def remove_employee(self, emp_name):
+        if emp_name in self.employees:
+            self.employees.remove(emp_name)
+            Department.number_employee -= 1
+
+    def print_info(self):
+        print(f"{self.name} group: {self.employees}")
+
+# 1. Tạo biến class: number_employee (done trong class)
+# 2. In tổng số nhân viên:
+print("Tổng số nhân viên ban đầu:", Department.number_employee)
+
+# 3. Tạo 2 phòng ban: IT và Finance
+it_dept = Department("IT")
+finance_dept = Department("Finance")
+
+# 4. Thêm nhân viên
+it_dept.add_employee("Hùng")
+it_dept.add_employee("Dũng")
+
+finance_dept.add_employee("Lan")
+finance_dept.add_employee("Mai")
+finance_dept.add_employee("Hà")
+finance_dept.add_employee("Tú")
+finance_dept.add_employee("Linh")
+
+# 5. Xóa 1 nhân viên Finance nghỉ
+finance_dept.remove_employee("Tú")
+
+# 6. In ra danh sách từng group
+it_dept.print_info()
+finance_dept.print_info()
+
+# In tổng số nhân viên
+print("Tổng số nhân viên sau khi thêm/xóa:", Department.number_employee)
