@@ -1,0 +1,75 @@
+import json
+import csv
+
+# 1. Tạo file tên "nhanvien.txt"
+filename = "nhanvien.txt"
+
+# 2. Ghi 3 nhân viên
+employees = [
+    {"name": "An", "age": 25, "salary": 5000, "title": "Dev"},
+    {"name": "Bình", "age": 30, "salary": 6000, "title": "Tester"},
+    {"name": "Cường", "age": 28, "salary": 5500, "title": "BA"}
+]
+
+with open(filename, "w") as f:
+    for emp in employees:
+        f.write(f"{emp['name']},{emp['age']},{emp['salary']},{emp['title']}\n")
+
+# 3. Đóng file (done ở with)
+
+# 4. Mở file để đọc
+with open(filename, "r") as f:
+    lines = f.readlines()
+
+# 5. Tìm nhân viên theo tên
+search_name = "An"
+for line in lines:
+    name, age, salary, title = line.strip().split(",")
+    if name == search_name:
+        print(f"Tìm thấy: {line.strip()}")
+
+# 6. Đóng file (done ở with)
+
+# 7. Ghi thêm 2 nhân viên nữa
+more_emps = [
+    {"name": "Dũng", "age": 35, "salary": 7000, "title": "Manager"},
+    {"name": "Em", "age": 22, "salary": 4000, "title": "Intern"}
+]
+
+with open(filename, "a") as f:
+    for emp in more_emps:
+        f.write(f"{emp['name']},{emp['age']},{emp['salary']},{emp['title']}\n")
+
+# 8. Xoá nhân viên theo tên
+remove_name = "Bình"
+with open(filename, "r") as f:
+    lines = f.readlines()
+
+with open(filename, "w") as f:
+    for line in lines:
+        if not line.startswith(remove_name + ","):
+            f.write(line)
+
+# 9. Ghi ra file CSV
+with open(filename, "r") as f:
+    lines = f.readlines()
+
+with open("nhanvien.csv", "w", newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(["name", "age", "salary", "title"])
+    for line in lines:
+        writer.writerow(line.strip().split(","))
+
+# 10. Ghi ra file JSON
+json_list = []
+for line in lines:
+    name, age, salary, title = line.strip().split(",")
+    json_list.append({
+        "name": name,
+        "age": int(age),
+        "salary": int(salary),
+        "title": title
+    })
+
+with open("nhanvien.json", "w") as f:
+    json.dump(json_list, f, indent=4)
