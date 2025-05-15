@@ -1,0 +1,52 @@
+// Khai báo chân LED
+const int ledDo = 18;
+const int ledVang = 19;
+const int ledXanh = 21;
+
+// Khai báo chân nút nhấn
+const int nutDo = 25;
+const int nutVang = 26;
+const int nutXanh = 27;
+
+// Biến lưu trạng thái đèn
+bool trangThaiDo = false;
+bool trangThaiVang = false;
+bool trangThaiXanh = false;
+
+void setup() {
+  // Cấu hình chân LED là OUTPUT
+  pinMode(ledDo, OUTPUT);
+  pinMode(ledVang, OUTPUT);
+  pinMode(ledXanh, OUTPUT);
+
+  // Cấu hình nút là INPUT_PULLUP (ESP32 hỗ trợ)
+  pinMode(nutDo, INPUT_PULLUP);
+  pinMode(nutVang, INPUT_PULLUP);
+  pinMode(nutXanh, INPUT_PULLUP);
+}
+
+void loop() {
+  // Kiểm tra nút 1
+  if (digitalRead(nutDo) == LOW) {
+    delay(200); // Chống dội
+    trangThaiDo = !trangThaiDo;
+    digitalWrite(ledDo, trangThaiDo);
+    while (digitalRead(nutDo) == LOW); // Chờ nhả nút
+  }
+
+  // Kiểm tra nút 2
+  if (digitalRead(nutVang) == LOW) {
+    delay(200);
+    trangThaiVang = !trangThaiVang;
+    digitalWrite(ledVang, trangThaiVang);
+    while (digitalRead(nutVang) == LOW);
+  }
+
+  // Kiểm tra nút 3
+  if (digitalRead(nutXanh) == LOW) {
+    delay(200);
+    trangThaiXanh = !trangThaiXanh;
+    digitalWrite(ledXanh, trangThaiXanh);
+    while (digitalRead(nutXanh) == LOW);
+  }
+}
