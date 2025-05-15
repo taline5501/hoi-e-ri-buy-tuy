@@ -1,0 +1,35 @@
+const int btnPin  = 18;
+const int ledPin  = 23;
+const int buzPin  = 22;
+volatile bool triggered = false;
+volatile unsigned long lastInterruptTime = 0;
+const unsigned long debounceDelay = 200;
+
+void IRAM_ATTR handleInterrupt() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastInterruptTime > debounceDelay) {
+    triggered = true;
+    lastInterruptTime = currentMillis;
+  }
+}
+
+void setup() {
+  pinMode(btnPin, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzPin, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(btnPin), handleInterrupt, FALLING);
+}
+
+void loop() {
+  if (triggered) {
+    bool ledState = !digitalRead(ledPin);
+    digitalWrite(ledPin, ledState);
+    // Bật còi cảnh báo liên tục khi LED bật, tắt còi khi LED tắt
+    if (ledState) {
+      tone(buzPin, 1000);  // phát liên tục cho đến khi gọi noTone()
+    } else {
+      noTone(buzPin);
+    }
+    triggered = false;
+  }
+}
