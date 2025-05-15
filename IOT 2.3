@@ -1,0 +1,30 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Thay bằng địa chỉ đúng nếu khác
+
+const int ledPin = 23;
+const int btnPin = 18;
+bool ledState = false;
+
+void setup() {
+  Wire.begin(21, 22);         // ⚠️ RẤT QUAN TRỌNG cho ESP32
+  lcd.init();
+  lcd.backlight();
+
+  pinMode(ledPin, OUTPUT);
+  pinMode(btnPin, INPUT_PULLUP);
+}
+
+void loop() {
+  if (digitalRead(btnPin) == LOW) {
+    ledState = !ledState;
+    digitalWrite(ledPin, ledState);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("LED: ");
+    lcd.print(ledState ? "ON" : "OFF");
+
+    delay(300);  // chống dội nút
+  }
