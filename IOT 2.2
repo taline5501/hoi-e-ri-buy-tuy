@@ -1,0 +1,26 @@
+// Khai báo chân GPIO của ESP32
+const int relayPin = 23;  // Chân GPIO điều khiển relay
+const int nutNhấnPin = 22; // Chân GPIO cho nút nhấn (nếu có)
+
+void setup() {
+  // Cấu hình relayPin là OUTPUT
+  pinMode(relayPin, OUTPUT);
+  
+  // Cấu hình nút nhấn (nếu có) là INPUT_PULLUP
+  pinMode(nutNhấnPin, INPUT_PULLUP);
+  
+  // Đảm bảo relay ở trạng thái tắt khi khởi động
+  digitalWrite(relayPin, LOW);
+}
+
+void loop() {
+  // Kiểm tra trạng thái nút nhấn (LOW khi nhấn nút)
+  if (digitalRead(nutNhấnPin) == LOW) {
+    delay(200);  // Tránh nhấn dội (debounce)
+    // Đảo trạng thái relay
+    digitalWrite(relayPin, !digitalRead(relayPin));
+    
+    // Chờ cho đến khi thả nút
+    while (digitalRead(nutNhấnPin) == LOW);
+  }
+}
