@@ -1,0 +1,27 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Địa chỉ I2C của LCD (0x27 hoặc 0x3F)
+
+// Chân analog đã nối biến trở
+#define POT_PIN 34  // GPIO34 (ADC1)
+
+void setup() {
+  Serial.begin(115200);
+
+  lcd.init();           // Khởi động LCD
+  lcd.backlight();      // Bật đèn nền
+  lcd.setCursor(0, 0);
+  lcd.print("Gia tri Analog:");
+}
+
+void loop() {
+  int analogValue = analogRead(POT_PIN);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Gia tri: ");
+  lcd.print(analogValue);
+  lcd.print("     ");  // Xóa số cũ nếu ngắn
+
+  delay(500);
+}
