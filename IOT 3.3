@@ -1,0 +1,24 @@
+#include "ESP32Servo.h"
+
+
+#define POT_PIN 34  // Chân ADC ESP32 kết nối biến trở
+#define SERVO_PIN 25 // Chân GPIO ESP32 kết nối Servo
+
+Servo myServo;
+
+
+void setup() {
+    Serial.begin(115200);
+    myServo.attach(SERVO_PIN);
+}
+
+void loop() {
+    int potValue = analogRead(POT_PIN);  // Đọc giá trị từ biến trở
+    int angle = map(potValue, 0, 4095, 0, 180);  // Chuyển đổi giá trị thành góc servo
+
+    myServo.write(angle);  // Điều khiển servo quay theo góc
+    Serial.print("Góc Servo: ");
+    Serial.println(angle);
+
+    delay(50);
+}
