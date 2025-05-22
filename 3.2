@@ -1,0 +1,34 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+#define LDR_PIN 34
+#define LED_RED 27
+#define LED_GREEN 26
+#define LED_YELLOW 25
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Địa chỉ I2C của LCD (0x27 hoặc 0x3F)
+
+
+void setup() {
+  pinMode(LED_RED, OUTPUT);
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_YELLOW, OUTPUT);
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  int ldrValue = analogRead(LDR_PIN);
+
+  // Điều khiển LED theo ngưỡng
+  digitalWrite(LED_RED, ldrValue < 1000);
+  digitalWrite(LED_YELLOW, ldrValue >= 1000 && ldrValue < 3000);
+  digitalWrite(LED_GREEN, ldrValue >= 3000);
+
+  // Hiển thị
+  lcd.setCursor(0, 0);
+  lcd.print("Do sang: ");
+  lcd.print(ldrValue);
+  lcd.print("   ");
+  delay(500);
+}
