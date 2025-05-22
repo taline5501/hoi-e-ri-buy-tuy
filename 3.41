@@ -1,0 +1,112 @@
+
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Keypad.h>
+#include <ESP32Servo.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// Mật khẩu đúng
+String password = "1234";
+String input = "";
+
+// Khai báo Servo
+Servo myServo;
+const int servoPin = 23;
+
+// Cấu hình Keypad 4x4
+const byte ROWS = 4;
+const byte COLS = 4;
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+byte rowPins[ROWS] = {15, 2, 4, 16};
+byte colPins[COLS] = {17, 5, 18, 19};
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+void setup() {
+  Wire.begin(21, 22);
+  lcd.init();
+  lcd.backlight();
+  myServo.setPeriodHertz(50);
+  myServo.attach(servoPin, 500, 2400);
+  myServo.write(0); // Khóa ban đầu
+
+  lcd.setCursor(0, 0);
+  lcd.print("Nhap mat khau:");
+}
+
+void loop() {
+  char key = keypad.getKey();
+
+  if (key) {
+    if (key == '#') {  // Kiểm tra khi nhấn "#"
+      if (input == password) {
+        lcd.clear();
+        lcd.print("Mo khoa!");
+        myServo.write(90); // Mở khóa
+        delay(3000);
+        myServo.write(0);  // Khóa lại
+        lcd.clear();
+        lcd.print("Nhap mat khau:");
+      } else {
+        lcd.clear();
+        lcd.print("Sai! Thu lai");
+        delay(2000);
+        lcd.clear();
+        lcd.print("Nhap mat khau:");
+      }
+      input = "";  // Reset mật khẩu
+    } else if (key == '*') {
+      input = ""; // Xóa
+      lcd.setCursor(0, 1);
+      lcd.print("                ");
+    } else {
+      input += key;
+      lcd.setCursor(0, 1);
+      lcd.print(input);
+    }
+  }
+}
+{
+  "version": 1,
+  "author": "Quốc Thống",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 220.8, "left": -158.36, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo1", "top": 55.6, "left": 9.6, "attrs": {} },
+    { "type": "wokwi-membrane-keypad", "id": "keypad1", "top": 314.8, "left": 44, "attrs": {} },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": 160,
+      "left": 15.2,
+      "attrs": { "pins": "i2c" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "servo1:GND", "esp:GND.2", "black", [ "h0" ] ],
+    [ "servo1:V+", "esp:5V", "red", [ "h-182.4", "v307.3" ] ],
+    [ "lcd1:GND", "esp:GND.2", "black", [ "h-76.8", "v57.6" ] ],
+    [ "lcd1:VCC", "esp:5V", "red", [ "h-67.2", "v0.1", "h-124.8", "v220.8" ] ],
+    [ "lcd1:SDA", "esp:21", "green", [ "h-48", "v86.6" ] ],
+    [ "lcd1:SCL", "esp:22", "green", [ "h-57.6", "v48.3" ] ],
+    [ "servo1:PWM", "esp:23", "green", [ "h-57.6", "v134.6" ] ],
+    [ "keypad1:R1", "esp:15", "green", [ "v9.6", "h-192", "v-268.8" ] ],
+    [ "keypad1:R2", "esp:2", "green", [ "v19.2", "h-192.4", "v-288" ] ],
+    [ "keypad1:R3", "esp:4", "green", [ "v28.8", "h-192.3", "v-316.8" ] ],
+    [ "keypad1:R4", "esp:16", "green", [ "v38.4", "h-192.2", "v-336" ] ],
+    [ "keypad1:C1", "esp:17", "green", [ "v48", "h-192.1", "v-355.2" ] ],
+    [ "keypad1:C2", "esp:5", "green", [ "v57.6", "h-192", "v-374.4" ] ],
+    [ "keypad1:C3", "esp:18", "green", [ "v67.2", "h-192.15", "v-393.6" ] ],
+    [ "keypad1:C4", "esp:19", "green", [ "v76.8", "h-192.3", "v-412.8" ] ]
+  ],
+  "dependencies": {}
+}
